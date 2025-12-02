@@ -326,6 +326,53 @@ app.patch('/api/servers/:id', (req, res) => {
   return res.json(buildLegacyPayload());
 });
 
+// Add a new server
+app.post('/api/servers', (req, res) => {
+  const { label, host, region, weight, role, latencyMs } = req.body ?? {};
+
+  if (!label || !host) {
+    return res.status(400).json({ message: 'Label dan host wajib diisi.' });
+  }
+
+  // Generate unique ID from label
+  const id = label.toLowerCase().replace(/\s+/g, '-') + '-' + Date.now().toString(36);
+
+  const newServer = {
+    id,
+    label,
+    host,
+    region: region || 'Custom',
+    weight: Math.max(1, Number(weight) || 1),
+    status: 'up',
+    latencyMs: Math.max(10, Number(latencyMs) || 50),
+    role: role || 'Custom server',
+    capacity: 500,
+    errorRate: 0.05,
+    currentLoad: 0,
+    activeConnections: 0,
+  };
+
+  legacyPool.push(newServer);
+  legacyStats[id] = { served: 0, lastLatencyMs: null, lastDispatchedAt: null };
+  legacyBalancer.sync();
+
+  return res.json(buildLegacyPayload());
+});
+
+// Delete a server
+app.delete('/api/servers/:id', (req, res) => {
+  const index = legacyPool.findIndex((server) => server.id === req.params.id);
+  if (index === -1) {
+    return res.status(404).json({ message: 'Server tidak ditemukan.' });
+  }
+
+  legacyPool.splice(index, 1);
+  delete legacyStats[req.params.id];
+  legacyBalancer.sync();
+
+  return res.json(buildLegacyPayload());
+});
+
 app.post('/api/reset', (_req, res) => {
   Object.keys(legacyStats).forEach((key) => {
     legacyStats[key] = {
@@ -644,15 +691,18 @@ app.post('/api/ab-test/quick-sim', (req, res) => {
 app.listen(port, () => {
   console.log(`Load balancer API listening on http://localhost:${port}`);
   console.log('Available endpoints:');
-  console.log('  GET  /api/health');
-  console.log('  GET  /api/servers');
-  console.log('  POST /api/traffic');
-  console.log('  POST /api/reset');
-  console.log('  GET  /api/ab-test/status');
-  console.log('  GET  /api/ab-test/algorithms');
-  console.log('  POST /api/ab-test/configure');
-  console.log('  POST /api/ab-test/start');
-  console.log('  POST /api/ab-test/stop');
-  console.log('  POST /api/ab-test/reset');
-  console.log('  POST /api/ab-test/quick-sim');
+  console.log('  GET    /api/health');
+  console.log('  GET    /api/servers');
+  console.log('  POST   /api/servers          (add new server)');
+  console.log('  PATCH  /api/servers/:id      (update server)');
+  console.log('  DELETE /api/servers/:id      (remove server)');
+  console.log('  POST   /api/traffic');
+  console.log('  POST   /api/reset');
+  console.log('  GET    /api/ab-test/status');
+  console.log('  GET    /api/ab-test/algorithms');
+  console.log('  POST   /api/ab-test/configure');
+  console.log('  POST   /api/ab-test/start');
+  console.log('  POST   /api/ab-test/stop');
+  console.log('  POST   /api/ab-test/reset');
+  console.log('  POST   /api/ab-test/quick-sim');
 });

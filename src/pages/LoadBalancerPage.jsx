@@ -11,6 +11,15 @@ export default function LoadBalancerPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [updatingServer, setUpdatingServer] = useState(null);
   const [error, setError] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newServer, setNewServer] = useState({
+    label: '',
+    host: '',
+    region: '',
+    weight: 3,
+    role: '',
+    latencyMs: 50,
+  });
 
   // A/B Testing State
   const [abTestStatus, setAbTestStatus] = useState(null);
@@ -155,6 +164,68 @@ export default function LoadBalancerPage() {
       setError('Tidak dapat mereset simulasi: backend belum berjalan?');
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const addServer = async () => {
+    if (!newServer.label || !newServer.host) {
+      setError('Label dan host wajib diisi.');
+      return;
+    }
+    setIsLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(`${API_BASE}/api/servers`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newServer),
+      });
+
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload?.message ?? 'Gagal menambah server');
+      }
+
+      setServers(payload.servers ?? []);
+      setTotals(payload.totals ?? {});
+      setRecent(payload.recentDispatches ?? []);
+      setNewServer({
+        label: '',
+        host: '',
+        region: '',
+        weight: 3,
+        role: '',
+        latencyMs: 50,
+      });
+      setShowAddForm(false);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteServer = async (id) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus server ini?')) return;
+    setUpdatingServer(id);
+    setError(null);
+    try {
+      const response = await fetch(`${API_BASE}/api/servers/${id}`, {
+        method: 'DELETE',
+      });
+
+      const payload = await response.json();
+      if (!response.ok) {
+        throw new Error(payload?.message ?? 'Gagal menghapus server');
+      }
+
+      setServers(payload.servers ?? []);
+      setTotals(payload.totals ?? {});
+      setRecent(payload.recentDispatches ?? []);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setUpdatingServer(null);
     }
   };
 
@@ -458,7 +529,120 @@ export default function LoadBalancerPage() {
                 <p className="eyebrow">Pool Server</p>
                 <h3>Atur bobot & status</h3>
               </div>
+              <button
+                type="button"
+                className="btn primary"
+                onClick={() => setShowAddForm(!showAddForm)}
+              >
+                {showAddForm ? 'Tutup' : '+ Tambah Server'}
+              </button>
             </div>
+
+            {showAddForm && (
+              <div className="lb-add-server-form">
+                <div className="lb-form-grid">
+                  <div className="lb-form-field">
+                    <label htmlFor="server-label">Nama Server *</label>
+                    <input
+                      id="server-label"
+                      type="text"
+                      placeholder="contoh: Web Server 1"
+                      value={newServer.label}
+                      onChange={(e) =>
+                        setNewServer({ ...newServer, label: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="lb-form-field">
+                    <label htmlFor="server-host">Host / IP *</label>
+                    <input
+                      id="server-host"
+                      type="text"
+                      placeholder="contoh: 192.168.1.100"
+                      value={newServer.host}
+                      onChange={(e) =>
+                        setNewServer({ ...newServer, host: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="lb-form-field">
+                    <label htmlFor="server-region">Region</label>
+                    <input
+                      id="server-region"
+                      type="text"
+                      placeholder="contoh: DC Jakarta"
+                      value={newServer.region}
+                      onChange={(e) =>
+                        setNewServer({ ...newServer, region: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="lb-form-field">
+                    <label htmlFor="server-role">Role</label>
+                    <input
+                      id="server-role"
+                      type="text"
+                      placeholder="contoh: Backend API"
+                      value={newServer.role}
+                      onChange={(e) =>
+                        setNewServer({ ...newServer, role: e.target.value })
+                      }
+                    />
+                  </div>
+                  <div className="lb-form-field">
+                    <label htmlFor="server-weight">Bobot</label>
+                    <input
+                      id="server-weight"
+                      type="number"
+                      min="1"
+                      max="10"
+                      value={newServer.weight}
+                      onChange={(e) =>
+                        setNewServer({
+                          ...newServer,
+                          weight: Math.max(1, Number(e.target.value) || 1),
+                        })
+                      }
+                    />
+                  </div>
+                  <div className="lb-form-field">
+                    <label htmlFor="server-latency">Latency (ms)</label>
+                    <input
+                      id="server-latency"
+                      type="number"
+                      min="10"
+                      max="500"
+                      value={newServer.latencyMs}
+                      onChange={(e) =>
+                        setNewServer({
+                          ...newServer,
+                          latencyMs: Math.max(10, Number(e.target.value) || 50),
+                        })
+                      }
+                    />
+                  </div>
+                </div>
+                <div className="lb-form-actions">
+                  <button
+                    type="button"
+                    className="btn ghost"
+                    onClick={() => setShowAddForm(false)}
+                    disabled={isLoading}
+                  >
+                    Batal
+                  </button>
+                  <button
+                    type="button"
+                    className="btn primary"
+                    onClick={addServer}
+                    disabled={isLoading || !newServer.label || !newServer.host}
+                  >
+                    {isLoading ? 'Menambahkan...' : 'Tambah Server'}
+                  </button>
+                </div>
+              </div>
+            )}
+
             <div className="lb-servers">
               {servers.map((server) => (
                 <article
@@ -524,6 +708,14 @@ export default function LoadBalancerPage() {
                       disabled={updatingServer === server.id}
                     >
                       {server.status === 'up' ? 'Matikan sementara' : 'Aktifkan kembali'}
+                    </button>
+                    <button
+                      type="button"
+                      className="btn danger"
+                      onClick={() => deleteServer(server.id)}
+                      disabled={updatingServer === server.id}
+                    >
+                      Hapus
                     </button>
                   </div>
                 </article>

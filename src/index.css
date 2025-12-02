@@ -1635,3 +1635,97 @@ img {
     grid-template-columns: 100px 1fr 40px;
   }
 }
+
+/* ========== Add Server Form Styles ========== */
+
+.lb-add-server-form {
+  background: linear-gradient(135deg, #f0fdf4 0%, #e8f5ee 100%);
+  border: 1px solid rgba(15, 140, 85, 0.2);
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.lb-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.lb-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.lb-form-field label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.lb-form-field input {
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.95rem;
+  background: var(--white);
+  color: var(--text-main);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lb-form-field input:focus {
+  outline: none;
+  border-color: #0f8c55;
+  box-shadow: 0 0 0 3px rgba(15, 140, 85, 0.15);
+}
+
+.lb-form-field input::placeholder {
+  color: var(--text-muted);
+  opacity: 0.6;
+}
+
+.lb-form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Danger button style */
+.btn.danger {
+  background: linear-gradient(90deg, #dc2626, #b91c1c);
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+.btn.danger:hover {
+  background: linear-gradient(90deg, #b91c1c, #991b1b);
+  box-shadow: 0 10px 24px rgba(220, 38, 38, 0.25);
+}
+
+@media (max-width: 600px) {
+  .lb-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .lb-form-actions {
+    flex-direction: column;
+  }
+
+  .lb-form-actions .btn {
+    width: 100%;
+  }
+}
