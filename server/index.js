@@ -259,7 +259,7 @@ app.get('/api/servers', (_req, res) => {
 });
 
 app.post('/api/traffic', (req, res) => {
-  const count = Math.min(Math.max(Number(req.body?.count) || 1, 1), 200);
+  const count = Math.max(Number(req.body?.count) || 1, 1); // No upper limit for stress testing
   const dispatched = [];
 
   for (let i = 0; i < count; i += 1) {
@@ -475,7 +475,7 @@ app.post('/api/ab-test/configure', (req, res) => {
   }
 
   if (requestCount !== undefined) {
-    abTestState.config.requestCount = Math.min(Math.max(requestCount, 10), 1000);
+    abTestState.config.requestCount = Math.max(requestCount, 1); // No upper limit for stress testing
   }
 
   if (requestsPerSecond !== undefined) {
@@ -596,7 +596,7 @@ app.post('/api/ab-test/reset', (_req, res) => {
 
 // Quick simulation endpoint for immediate comparison
 app.post('/api/ab-test/quick-sim', (req, res) => {
-  const count = Math.min(Math.max(Number(req.body?.count) || 50, 10), 500);
+  const count = Math.max(Number(req.body?.count) || 50, 1); // No upper limit for stress testing
   const config = {
     simulateRealLatency: req.body?.simulateRealLatency ?? true,
     simulateErrors: req.body?.simulateErrors ?? true,

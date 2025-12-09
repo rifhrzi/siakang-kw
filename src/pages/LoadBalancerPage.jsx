@@ -1,4 +1,11 @@
 import { useEffect, useMemo, useState } from 'react';
+import {
+  LatencyComparisonChart,
+  ErrorRateComparisonChart,
+  DistributionComparisonChart,
+  OverallComparisonChart,
+  downloadAllCharts,
+} from '../components/ComparisonChart';
 
 const API_BASE = import.meta.env.VITE_LB_BASE_URL || 'http://localhost:4000';
 
@@ -422,7 +429,6 @@ export default function LoadBalancerPage() {
                 id="request-count"
                 type="number"
                 min="1"
-                max="200"
                 value={customCount}
                 onChange={(event) =>
                   setCustomCount(Math.max(1, Number(event.target.value) || 1))
@@ -795,10 +801,9 @@ export default function LoadBalancerPage() {
                   <label>Jumlah Request</label>
                   <input
                     type="number"
-                    min="10"
-                    max="500"
+                    min="1"
                     value={quickSimCount}
-                    onChange={(e) => setQuickSimCount(Math.max(10, Number(e.target.value) || 50))}
+                    onChange={(e) => setQuickSimCount(Math.max(1, Number(e.target.value) || 50))}
                     disabled={isLoading}
                   />
                 </div>
@@ -1005,6 +1010,54 @@ export default function LoadBalancerPage() {
                       </div>
                     );
                   })}
+                </div>
+              </div>
+
+              {/* Charts Panel */}
+              <div className="lb-panel lb-panel--full ab-charts">
+                <div className="lb-panel__header">
+                  <div>
+                    <p className="eyebrow">Visualisasi</p>
+                    <h3>Grafik Perbandingan</h3>
+                    <p className="section-subtitle" style={{ marginTop: '8px' }}>
+                      Lihat perbandingan performa dalam bentuk grafik. Setiap grafik dapat diunduh sebagai PNG.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    className="btn primary"
+                    onClick={downloadAllCharts}
+                  >
+                    📥 Unduh Semua Chart
+                  </button>
+                </div>
+
+                <div className="ab-charts__grid">
+                  <div className="ab-chart-card">
+                    <LatencyComparisonChart
+                      groupA={quickSimResults.groupA}
+                      groupB={quickSimResults.groupB}
+                    />
+                  </div>
+                  <div className="ab-chart-card">
+                    <ErrorRateComparisonChart
+                      groupA={quickSimResults.groupA}
+                      groupB={quickSimResults.groupB}
+                    />
+                  </div>
+                  <div className="ab-chart-card ab-chart-card--full">
+                    <DistributionComparisonChart
+                      groupA={quickSimResults.groupA}
+                      groupB={quickSimResults.groupB}
+                      servers={servers}
+                    />
+                  </div>
+                  <div className="ab-chart-card ab-chart-card--full">
+                    <OverallComparisonChart
+                      groupA={quickSimResults.groupA}
+                      groupB={quickSimResults.groupB}
+                    />
+                  </div>
                 </div>
               </div>
 

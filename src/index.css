@@ -1729,3 +1729,153 @@ img {
     width: 100%;
   }
 }
+
+/* ========== Chart Styles ========== */
+
+.ab-charts {
+  grid-area: charts;
+}
+
+.ab-charts__grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.ab-chart-card {
+  background: linear-gradient(135deg, #f7f8fc 0%, #ffffff 100%);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
+}
+
+.ab-chart-card:hover {
+  box-shadow: 0 12px 30px rgba(31, 36, 51, 0.1);
+  transform: translateY(-2px);
+}
+
+.ab-chart-card--full {
+  grid-column: 1 / -1;
+}
+
+.chart-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chart-wrapper {
+  position: relative;
+  height: 300px;
+  width: 100%;
+}
+
+.chart-wrapper--tall {
+  height: 350px;
+}
+
+.chart-title {
+  margin: 0 0 16px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  text-align: center;
+}
+
+.chart-dual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: center;
+}
+
+.chart-dual__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.error-rate-chart {
+  width: 180px;
+  height: 180px;
+}
+
+.chart-label {
+  margin: 0;
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 0.95rem;
+}
+
+.chart-value {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+.chart-download {
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 20px;
+  font-size: 0.9rem;
+  transition: all 0.2s ease;
+}
+
+.chart-download:hover {
+  background: linear-gradient(90deg, #0f8c55, #0a5330);
+  color: #ffffff;
+  border-color: #0f8c55;
+}
+
+/* Update the A/B test grid to include charts area */
+.lb-grid--abtest {
+  grid-template-columns: 1fr 1fr;
+  grid-template-areas:
+    'config config'
+    'summary summary'
+    'groupA groupB'
+    'charts charts'
+    'insight insight';
+}
+
+@media (max-width: 960px) {
+  .ab-charts__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-dual {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .error-rate-chart {
+    width: 150px;
+    height: 150px;
+  }
+
+  .lb-grid--abtest {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      'config'
+      'summary'
+      'groupA'
+      'groupB'
+      'charts'
+      'insight';
+  }
+}
+
+@media (max-width: 600px) {
+  .chart-wrapper {
+    height: 250px;
+  }
+
+  .chart-wrapper--tall {
+    height: 300px;
+  }
+}
