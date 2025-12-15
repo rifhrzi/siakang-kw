@@ -171,53 +171,121 @@ export function createLoadBalancer(algorithm, servers) {
   }
 }
 
+/**
+ * SIAKANG Server Pool Configuration
+ * ================================
+ * Konfigurasi server backend untuk simulasi load balancer SIAKANG
+ * Total Kapasitas: ~4200 req/sec dengan 3 app server + 1 DR
+ * 
+ * Statistik SIAKANG:
+ * - 32.847 mahasiswa (28.456 aktif)
+ * - 1.247 dosen
+ * - 47 fitur/modul
+ * - Peak: 320.000 request/hari (KRS season)
+ * - Normal: 98.500 request/hari
+ */
 export const upstreamPool = [
   {
-    id: 'registrasi-core',
-    label: 'Registrasi Core',
+    id: 'app-01',
+    label: 'App Server 1',
     host: '10.10.10.11',
     region: 'DC Serang',
     weight: 5,
     status: 'up',
-    latencyMs: 46,
-    role: 'Pembayaran & registrasi',
-    capacity: 1000,
-    errorRate: 0.02,
+    latencyMs: 45,
+    role: 'Backend Utama - API Core',
+    capacity: 1200,
+    errorRate: 0.015,
+    specs: '16 vCPU, 64 GB RAM',
   },
   {
-    id: 'akademik-rsrv',
-    label: 'Akademik Reserve',
+    id: 'app-02',
+    label: 'App Server 2',
     host: '10.10.10.12',
+    region: 'DC Serang',
+    weight: 5,
+    status: 'up',
+    latencyMs: 48,
+    role: 'Backend Utama - API Core',
+    capacity: 1200,
+    errorRate: 0.015,
+    specs: '16 vCPU, 64 GB RAM',
+  },
+  {
+    id: 'app-03',
+    label: 'App Server 3',
+    host: '10.10.20.11',
     region: 'DC Cilegon',
     weight: 3,
     status: 'up',
     latencyMs: 62,
-    role: 'KRS & jadwal',
-    capacity: 600,
-    errorRate: 0.03,
+    role: 'Backend Sekunder - Read Replica',
+    capacity: 800,
+    errorRate: 0.025,
+    specs: '8 vCPU, 32 GB RAM',
   },
   {
-    id: 'dr-site',
-    label: 'DR Site',
-    host: '172.16.20.31',
-    region: 'Pusat DR',
+    id: 'dr-app',
+    label: 'DR Server',
+    host: '172.16.50.11',
+    region: 'DC Jakarta (DR)',
     weight: 1,
     status: 'up',
-    latencyMs: 105,
-    role: 'Cadangan bencana',
-    capacity: 200,
-    errorRate: 0.08,
-  },
-  {
-    id: 'lab-perf',
-    label: 'Lab Performance',
-    host: '10.10.55.10',
-    region: 'Lab Infrastruktur',
-    weight: 2,
-    status: 'up',
-    latencyMs: 54,
-    role: 'Stress test & QA',
+    latencyMs: 95,
+    role: 'Disaster Recovery - Warm Standby',
     capacity: 400,
-    errorRate: 0.04,
+    errorRate: 0.05,
+    specs: '8 vCPU, 32 GB RAM',
   },
 ];
+
+/**
+ * Statistik Infrastruktur SIAKANG
+ */
+export const siakangInfraStats = {
+  totalServer: 12,
+  serverAktif: 10,
+  loadBalancer: {
+    primary: 'Nginx (WRR)',
+    secondary: 'Nginx (Failover)',
+  },
+  database: {
+    type: 'PostgreSQL',
+    master: 'DC Serang (128 GB RAM)',
+    slave: 'DC Cilegon (128 GB RAM)',
+    drReplica: 'DC Jakarta',
+  },
+  cache: {
+    type: 'Redis Cluster',
+    memory: '32 GB',
+    hitRatio: '94.2%',
+  },
+  monitoring: ['Prometheus', 'Grafana', 'AlertManager'],
+  uptime: '99.72%',
+  sla: '99.5%',
+};
+
+/**
+ * Peak Time Configuration
+ */
+export const peakTimeConfig = {
+  // Jam sibuk harian
+  dailyPeaks: [
+    { start: '07:00', end: '10:00', multiplier: 2.5, label: 'Peak Pagi' },
+    { start: '13:00', end: '15:00', multiplier: 2.0, label: 'Peak Siang' },
+    { start: '19:00', end: '21:00', multiplier: 3.0, label: 'Peak Malam' },
+  ],
+  // Season dengan traffic tinggi
+  seasonalPeaks: [
+    { event: 'KRS Online', months: [2, 8], multiplier: 4.0 },
+    { event: 'Registrasi', months: [1, 7], multiplier: 3.5 },
+    { event: 'UAS/Input Nilai', months: [5, 12], multiplier: 2.5 },
+  ],
+  // Request stats
+  requestStats: {
+    avgDaily: 98500,
+    peakDaily: 320000,
+    avgPerSecond: 1.14,
+    peakPerSecond: 7.8,
+  },
+};
