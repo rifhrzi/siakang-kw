@@ -1,0 +1,17 @@
+# Backend API Server
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+
+# Install production dependencies only
+RUN npm ci --omit=dev
+
+# Copy server code
+COPY server ./server
+
+EXPOSE 4000
+
+CMD ["node", "server/index.js"]

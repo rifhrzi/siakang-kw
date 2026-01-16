@@ -1,9 +1,49 @@
 services:
-  app:
-    build: .
+  # Nginx Load Balancer (Frontend + Reverse Proxy)
+  nginx:
+    build:
+      context: .
+      dockerfile: Dockerfile.nginx
     ports:
       - "80:80"
+    depends_on:
+      - backend1
+      - backend2
+      - backend3
     restart: unless-stopped
+
+  # Backend Instance 1 (Weight: 5)
+  backend1:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
     environment:
       - NODE_ENV=production
       - PORT=4000
+      - SERVER_ID=backend-1
+      - SERVER_LABEL=Backend Server 1
+    restart: unless-stopped
+
+  # Backend Instance 2 (Weight: 3)
+  backend2:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - SERVER_ID=backend-2
+      - SERVER_LABEL=Backend Server 2
+    restart: unless-stopped
+
+  # Backend Instance 3 (Weight: 2)
+  backend3:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      - NODE_ENV=production
+      - PORT=4000
+      - SERVER_ID=backend-3
+      - SERVER_LABEL=Backend Server 3
+    restart: unless-stopped

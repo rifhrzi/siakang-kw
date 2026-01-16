@@ -10,9 +10,18 @@ import {
 
 const app = express();
 const port = process.env.PORT || 4000;
+const serverId = process.env.SERVER_ID || 'default';
+const serverLabel = process.env.SERVER_LABEL || 'Default Server';
 
 app.use(cors());
 app.use(express.json());
+
+// Add server identification to all responses
+app.use((req, res, next) => {
+  res.setHeader('X-Server-ID', serverId);
+  res.setHeader('X-Server-Label', serverLabel);
+  next();
+});
 
 // Deep clone function for server pool
 const clonePool = () =>
@@ -210,10 +219,10 @@ function buildServerStats(group) {
       share:
         group.stats.totalRequests > 0
           ? Math.round(
-              ((group.stats.serverDistribution[server.id] || 0) /
-                group.stats.totalRequests) *
-                100
-            )
+            ((group.stats.serverDistribution[server.id] || 0) /
+              group.stats.totalRequests) *
+            100
+          )
           : 0,
     },
   }));
