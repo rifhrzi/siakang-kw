@@ -14,7 +14,7 @@ import {
   siakangSummary,
 } from '../data/siakangStats';
 
-const API_BASE = import.meta.env.VITE_LB_BASE_URL || 'http://localhost:4000';
+const API_BASE = import.meta.env.VITE_LB_BASE_URL ?? (import.meta.env.PROD ? '' : 'http://localhost:4000');
 
 export default function LoadBalancerPage() {
   const [activeTab, setActiveTab] = useState('monitor');
