@@ -11,8 +11,8 @@ import {
   features,
   peakTimes,
   infrastructure,
-  XYZSummary,
-} from '../data/XYZStats';
+  xyzSummary,
+} from '../data/xyzStats';
 
 const API_BASE = import.meta.env.VITE_LB_BASE_URL ?? (import.meta.env.PROD ? '' : 'http://localhost:4000');
 
@@ -161,8 +161,8 @@ export default function LoadBalancerPage() {
       ...server,
       served,
       share: totalServed ? Math.round((served / totalServed) * 100) : 0,
-      expectedShare: activeStats.totalWeight 
-        ? Math.round((server.weight / activeStats.totalWeight) * 100) 
+      expectedShare: activeStats.totalWeight
+        ? Math.round((server.weight / activeStats.totalWeight) * 100)
         : 0,
     };
   });
@@ -244,7 +244,7 @@ export default function LoadBalancerPage() {
         </div>
         <div className="hero-cta">
           <p>
-            Simulasi load balancer untuk sistem akademik dengan {userStats.mahasiswa.aktif.toLocaleString('id-ID')} mahasiswa aktif 
+            Simulasi load balancer untuk sistem akademik dengan {userStats.mahasiswa.aktif.toLocaleString('id-ID')} mahasiswa aktif
             dan rata-rata {peakTimes.requestStats.avgPerHari.toLocaleString('id-ID')} request/hari.
           </p>
           <div className="lb-quick-control">
@@ -626,7 +626,7 @@ export default function LoadBalancerPage() {
                   <h3>Jam & Season Sibuk</h3>
                 </div>
               </div>
-              
+
               <div className="stats-section">
                 <p className="eyebrow">Jam Sibuk Harian</p>
                 <div className="peak-time-list">

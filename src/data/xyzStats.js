@@ -71,7 +71,7 @@ export const userStats = {
 
 export const features = {
   totalModul: 47,
-  
+
   // Fitur untuk Mahasiswa (32 fitur)
   mahasiswa: [
     { nama: 'Dashboard Akademik', akses: 'Tinggi', avgAksesHarian: 15420 },
@@ -409,7 +409,7 @@ export const capacity = {
 
 // ==================== RINGKASAN UNTUK DISPLAY ====================
 
-export const XYZSummary = {
+export const xyzSummary = {
   // Untuk ditampilkan di hero section
   quickStats: [
     { label: 'Total Mahasiswa', value: '32.847', icon: '👨‍🎓' },
