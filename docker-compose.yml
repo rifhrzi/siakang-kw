@@ -22,6 +22,7 @@ services:
       - PORT=4000
       - SERVER_ID=backend-1
       - SERVER_LABEL=Backend Server 1
+      - USE_REAL_REQUESTS=true
     restart: unless-stopped
 
   # Backend Instance 2 (Weight: 3)

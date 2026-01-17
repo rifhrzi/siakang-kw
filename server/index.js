@@ -1,5 +1,6 @@
 import cors from 'cors';
 import express from 'express';
+import { performance } from 'perf_hooks';
 import {
   upstreamPool,
   createLoadBalancer,
@@ -12,6 +13,11 @@ const app = express();
 const port = process.env.PORT || 4000;
 const serverId = process.env.SERVER_ID || 'default';
 const serverLabel = process.env.SERVER_LABEL || 'Default Server';
+
+// Check if running in Docker (real HTTP mode) or local (simulation mode)
+const USE_REAL_REQUESTS = process.env.USE_REAL_REQUESTS === 'true' || process.env.NODE_ENV === 'production';
+
+console.log(`Mode: ${USE_REAL_REQUESTS ? 'REAL HTTP REQUESTS' : 'SIMULATION'}`);
 
 app.use(cors());
 app.use(express.json());
@@ -263,14 +269,68 @@ app.get('/api/health', (_req, res) => {
   res.json({ status: 'ok', algorithm: 'weighted-round-robin' });
 });
 
+// Ping endpoint - used by load balancer to measure real latency
+app.get('/api/ping', (_req, res) => {
+  res.json({
+    status: 'ok',
+    serverId,
+    serverLabel,
+    timestamp: Date.now(),
+    uptime: process.uptime()
+  });
+});
+
 app.get('/api/servers', (_req, res) => {
   res.json(buildLegacyPayload());
 });
 
-app.post('/api/traffic', (req, res) => {
+/**
+ * Make a real HTTP request to a backend server
+ * Returns the actual measured latency
+ */
+async function makeRealRequest(server) {
+  const startTime = performance.now();
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+    const response = await fetch(`http://${server.host}/api/ping`, {
+      signal: controller.signal
+    });
+
+    clearTimeout(timeoutId);
+    const endTime = performance.now();
+    const latency = Math.round(endTime - startTime);
+
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
+
+    const data = await response.json();
+    return {
+      success: true,
+      latency,
+      responseServerId: data.serverId,
+      responseServerLabel: data.serverLabel,
+      isError: false
+    };
+  } catch (error) {
+    const endTime = performance.now();
+    const latency = Math.round(endTime - startTime);
+    return {
+      success: false,
+      latency,
+      error: error.message,
+      isError: true
+    };
+  }
+}
+
+app.post('/api/traffic', async (req, res) => {
   const count = Math.max(Number(req.body?.count) || 1, 1); // No upper limit for stress testing
   const dispatched = [];
 
+  // Process requests (with real HTTP or simulation based on mode)
   for (let i = 0; i < count; i += 1) {
     const target = legacyBalancer.next();
 
@@ -286,7 +346,23 @@ app.post('/api/traffic', (req, res) => {
     legacyStats[target.id] ??= {};
     legacyStats[target.id].served = (legacyStats[target.id].served ?? 0) + 1;
 
-    const latencyMs = simulateLatency(target, false);
+    let latencyMs;
+    let isError = false;
+    let responseServerId = target.id;
+
+    if (USE_REAL_REQUESTS) {
+      // Make actual HTTP request to the backend
+      const result = await makeRealRequest(target);
+      latencyMs = result.latency;
+      isError = result.isError;
+      if (result.responseServerId) {
+        responseServerId = result.responseServerId;
+      }
+    } else {
+      // Simulation mode
+      latencyMs = simulateLatency(target, false);
+    }
+
     const event = {
       requestId: legacyRequestCursor,
       serverId: target.id,
@@ -294,6 +370,9 @@ app.post('/api/traffic', (req, res) => {
       host: target.host,
       weight: target.weight,
       latencyMs,
+      isError,
+      isRealRequest: USE_REAL_REQUESTS,
+      responseServerId,
       at: new Date().toISOString(),
       region: target.region,
     };
@@ -308,6 +387,7 @@ app.post('/api/traffic', (req, res) => {
 
   return res.json({
     dispatched,
+    mode: USE_REAL_REQUESTS ? 'real' : 'simulation',
     ...buildLegacyPayload(),
   });
 });
