@@ -1,5 +1,5 @@
 /**
- * SIAKANG (Sistem Informasi Akademik) - Statistik & Data Infrastruktur
+ * XYZ (Sistem Informasi Akademik) - Statistik & Data Infrastruktur
  * Universitas Sultan Ageng Tirtayasa (Untirta)
  * 
  * Data ini merepresentasikan skala sistem akademik universitas dengan
@@ -67,7 +67,7 @@ export const userStats = {
   totalUsers: 34728, // mahasiswa aktif + dosen + staff
 };
 
-// ==================== FITUR SIAKANG ====================
+// ==================== FITUR XYZ ====================
 
 export const features = {
   totalModul: 47,
@@ -409,7 +409,7 @@ export const capacity = {
 
 // ==================== RINGKASAN UNTUK DISPLAY ====================
 
-export const siakangSummary = {
+export const XYZSummary = {
   // Untuk ditampilkan di hero section
   quickStats: [
     { label: 'Total Mahasiswa', value: '32.847', icon: '👨‍🎓' },
@@ -440,5 +440,7 @@ export const siakangSummary = {
     lokasi: ['DC Serang', 'DC Cilegon', 'DC Jakarta (DR)'],
   },
 };
+
+
 
 

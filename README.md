@@ -1,4 +1,4 @@
-# SIAKANG - Simulasi Load Balancer Weighted Round Robin
+# XYZ - Simulasi Load Balancer Weighted Round Robin
 
 <p align="center">
   <img src="https://img.shields.io/badge/React-18.3-61DAFB?style=flat-square&logo=react" alt="React">
@@ -7,11 +7,11 @@
   <img src="https://img.shields.io/badge/Node.js-18+-339933?style=flat-square&logo=node.js" alt="Node.js">
 </p>
 
-Proyek simulasi **Sistem Informasi Akademik** (SIAKANG) dengan fitur utama demonstrasi algoritma **Load Balancer Weighted Round Robin (WRR)**. Aplikasi ini memungkinkan pengguna untuk memvisualisasikan distribusi traffic ke multiple backend server dan membandingkan performa berbagai algoritma load balancing.
+Proyek simulasi **Sistem Informasi Akademik** (XYZ) dengan fitur utama demonstrasi algoritma **Load Balancer Weighted Round Robin (WRR)**. Aplikasi ini memungkinkan pengguna untuk memvisualisasikan distribusi traffic ke multiple backend server dan membandingkan performa berbagai algoritma load balancing.
 
 ## 📋 Daftar Isi
 
-- [Statistik SIAKANG](#-statistik-siakang)
+- [Statistik XYZ](#-statistik-XYZ)
 - [Fitur](#-fitur)
 - [Tech Stack](#-tech-stack)
 - [Infrastruktur Server](#-infrastruktur-server)
@@ -26,7 +26,7 @@ Proyek simulasi **Sistem Informasi Akademik** (SIAKANG) dengan fitur utama demon
 
 ---
 
-## 📊 Statistik SIAKANG
+## 📊 Statistik XYZ
 
 ### Ringkasan Pengguna
 
@@ -73,7 +73,7 @@ Proyek simulasi **Sistem Informasi Akademik** (SIAKANG) dengan fitur utama demon
 
 ---
 
-## 🔧 Fitur SIAKANG
+## 🔧 Fitur XYZ
 
 ### Total: 47 Modul/Fitur
 
@@ -252,7 +252,7 @@ Proyek simulasi **Sistem Informasi Akademik** (SIAKANG) dengan fitur utama demon
 
 ## ✨ Fitur
 
-### Dashboard SIAKANG
+### Dashboard XYZ
 
 - 📊 Dashboard informasi akademik mahasiswa
 - 📅 Modul praperkuliahan (Registrasi, KRS)
@@ -305,8 +305,8 @@ npm --version
 1. **Clone repository**
 
 ```bash
-git clone https://github.com/username/siakang-kw.git
-cd siakang-kw
+git clone https://github.com/username/XYZ-kw.git
+cd XYZ-kw
 ```
 
 2. **Install dependencies**
@@ -363,7 +363,7 @@ npm run preview
 ## 📁 Struktur Proyek
 
 ```
-siakang-kw/
+XYZ-kw/
 ├── dist/                    # Output build production
 ├── server/
 │   ├── index.js             # Express server & API endpoints
@@ -374,7 +374,7 @@ siakang-kw/
 │   │   └── Layout.jsx           # Layout utama aplikasi
 │   ├── data/
 │   │   ├── siteData.js      # Data statis mahasiswa & menu
-│   │   └── siakangStats.js  # Statistik SIAKANG (pengguna, fitur, peak time)
+│   │   └── XYZStats.js  # Statistik XYZ (pengguna, fitur, peak time)
 │   ├── models/
 │   │   ├── MetricCard.js    # Model kartu metrik
 │   │   ├── ModuleCard.js    # Model kartu modul
@@ -558,3 +558,4 @@ Distributed under the MIT License.
 <p align="center">
   Dibuat dengan ❤️ untuk pembelajaran algoritma Load Balancing
 </p>
+

@@ -11,8 +11,8 @@ import {
   features,
   peakTimes,
   infrastructure,
-  siakangSummary,
-} from '../data/siakangStats';
+  XYZSummary,
+} from '../data/XYZStats';
 
 const API_BASE = import.meta.env.VITE_LB_BASE_URL ?? (import.meta.env.PROD ? '' : 'http://localhost:4000');
 
@@ -218,7 +218,7 @@ export default function LoadBalancerPage() {
               <span>⚖️</span>
             </div>
             <div>
-              <p className="welcome">Simulasi Infrastruktur SIAKANG</p>
+              <p className="welcome">Simulasi Infrastruktur XYZ</p>
               <h1 className="student-name">Load Balancer WRR</h1>
               <p className="student-program">Weighted Round Robin Algorithm</p>
             </div>
@@ -294,7 +294,7 @@ export default function LoadBalancerPage() {
           className={`lb-tab ${activeTab === 'stats' ? 'active' : ''}`}
           onClick={() => setActiveTab('stats')}
         >
-          📊 Statistik SIAKANG
+          📊 Statistik XYZ
         </button>
         <button
           type="button"
@@ -422,12 +422,12 @@ export default function LoadBalancerPage() {
         </>
       )}
 
-      {/* ==================== TAB: STATISTIK SIAKANG ==================== */}
+      {/* ==================== TAB: STATISTIK XYZ ==================== */}
       {activeTab === 'stats' && (
-        <section className="siakang-stats">
+        <section className="XYZ-stats">
           {/* Quick Stats Cards */}
           <div className="cards-grid">
-            {siakangSummary.quickStats.map((stat) => (
+            {XYZSummary.quickStats.map((stat) => (
               <article key={stat.label} className="info-card">
                 <p className="label">{stat.icon} {stat.label}</p>
                 <p className="value">{stat.value}</p>
@@ -579,7 +579,7 @@ export default function LoadBalancerPage() {
             <div className="lb-dash-panel">
               <div className="lb-dash-panel__header">
                 <div>
-                  <p className="eyebrow">⚙️ Fitur SIAKANG</p>
+                  <p className="eyebrow">⚙️ Fitur XYZ</p>
                   <h3>{features.totalModul} Total Modul</h3>
                 </div>
               </div>
@@ -666,7 +666,7 @@ export default function LoadBalancerPage() {
 
       {/* ==================== TAB: INFRASTRUKTUR ==================== */}
       {activeTab === 'infra' && (
-        <section className="siakang-infra">
+        <section className="XYZ-infra">
           {/* Infrastructure Summary Cards */}
           <div className="cards-grid">
             <article className="info-card">
@@ -696,7 +696,7 @@ export default function LoadBalancerPage() {
             <div className="lb-dash-panel__header">
               <div>
                 <p className="eyebrow">🏗️ Daftar Server</p>
-                <h3>Infrastruktur SIAKANG</h3>
+                <h3>Infrastruktur XYZ</h3>
               </div>
             </div>
             <div className="stats-table-wrapper">
@@ -932,3 +932,5 @@ export default function LoadBalancerPage() {
     </>
   );
 }
+
+

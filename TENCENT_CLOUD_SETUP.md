@@ -1,6 +1,6 @@
 # Deployment Guide for Tencent Cloud VPS
 
-This guide walks you through deploying the `siakang-kw` project on a Tencent Cloud VPS.
+This guide walks you through deploying the `XYZ-kw` project on a Tencent Cloud VPS.
 
 ---
 
@@ -25,8 +25,8 @@ sudo usermod -aG docker $USER
 
 ```bash
 # Clone or upload project
-git clone https://github.com/rifhrzi/siakang-kw.git
-cd siakang-kw
+git clone https://github.com/rifhrzi/XYZ-kw.git
+cd XYZ-kw
 
 # Build and run
 docker compose up -d --build
@@ -96,19 +96,19 @@ You can clone your repository directly if it's on GitHub, or upload the files fr
 sudo apt install -y git
 
 # Clone repo
-git clone https://github.com/rifhrzi/siakang-kw.git
-cd siakang-kw
+git clone https://github.com/rifhrzi/XYZ-kw.git
+cd XYZ-kw
 ```
 
 **Option B: Manual Upload**
-If you don't use Git on the server, upload your project folder using SCP or an FTP client (like FileZilla) to `/home/ubuntu/siakang-kw`.
+If you don't use Git on the server, upload your project folder using SCP or an FTP client (like FileZilla) to `/home/ubuntu/XYZ-kw`.
 
 ## Step 3: Install Dependencies
 
 Navigate to the project directory and install dependencies:
 
 ```bash
-cd ~/siakang-kw
+cd ~/XYZ-kw
 npm install
 ```
 
@@ -127,7 +127,7 @@ This creates a `dist` folder containing the static files.
 Start the Express server using PM2 so it stays alive in the background:
 
 ```bash
-pm2 start server/index.js --name "siakang-api"
+pm2 start server/index.js --name "XYZ-api"
 pm2 save
 pm2 startup
 ```
@@ -139,7 +139,7 @@ Nginx will serve the frontend files and reverse-proxy API requests to your backe
 
 1.  Create a new site configuration:
     ```bash
-    sudo nano /etc/nginx/sites-available/siakang
+    sudo nano /etc/nginx/sites-available/XYZ
     ```
 
 2.  Paste the following configuration (Replace `_` with your domain name if you have one, e.g., `server_name example.com;`):
@@ -150,7 +150,7 @@ Nginx will serve the frontend files and reverse-proxy API requests to your backe
         server_name _;
 
         # Serve Frontend
-        root /home/ubuntu/siakang-kw/dist;
+        root /home/ubuntu/XYZ-kw/dist;
         index index.html;
 
         # Frontend Routing (SPA catch-all)
@@ -169,11 +169,11 @@ Nginx will serve the frontend files and reverse-proxy API requests to your backe
         }
     }
     ```
-    *Note: Ensure the `root` path matches where your project is located (`/home/ubuntu/siakang-kw/dist` or `/var/www/...`).*
+    *Note: Ensure the `root` path matches where your project is located (`/home/ubuntu/XYZ-kw/dist` or `/var/www/...`).*
 
 3.  Enable the site and remove the default:
     ```bash
-    sudo ln -s /etc/nginx/sites-available/siakang /etc/nginx/sites-enabled/
+    sudo ln -s /etc/nginx/sites-available/XYZ /etc/nginx/sites-enabled/
     sudo rm /etc/nginx/sites-enabled/default
     ```
 
@@ -200,6 +200,7 @@ You should see the application running. The frontend requests to `/api` will be 
 
 ## Troubleshooting
 
--   **Backend not working?** Check logs: `pm2 logs siakang-api`
+-   **Backend not working?** Check logs: `pm2 logs XYZ-api`
 -   **Frontend 404?** Check Nginx permissions. Ensure the user running Nginx (usually `www-data`) can read the `dist` folder.
-    -   Quick fix: `chmod -R 755 /home/ubuntu/siakang-kw`
+    -   Quick fix: `chmod -R 755 /home/ubuntu/XYZ-kw`
+

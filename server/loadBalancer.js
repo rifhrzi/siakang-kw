@@ -172,12 +172,12 @@ export function createLoadBalancer(algorithm, servers) {
 }
 
 /**
- * SIAKANG Server Pool Configuration
+ * XYZ Server Pool Configuration
  * ================================
- * Konfigurasi server backend untuk simulasi load balancer SIAKANG
+ * Konfigurasi server backend untuk simulasi load balancer XYZ
  * Total Kapasitas: ~4200 req/sec dengan 3 app server + 1 DR
  * 
- * Statistik SIAKANG:
+ * Statistik XYZ:
  * - 32.847 mahasiswa (28.456 aktif)
  * - 1.247 dosen
  * - 47 fitur/modul
@@ -227,9 +227,9 @@ export const upstreamPool = [
 ];
 
 /**
- * Statistik Infrastruktur SIAKANG
+ * Statistik Infrastruktur XYZ
  */
-export const siakangInfraStats = {
+export const XYZInfraStats = {
   totalServer: 12,
   serverAktif: 10,
   loadBalancer: {
@@ -276,3 +276,4 @@ export const peakTimeConfig = {
     peakPerSecond: 7.8,
   },
 };
+

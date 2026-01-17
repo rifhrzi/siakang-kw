@@ -33,7 +33,7 @@ export default function ModulePage({ section }) {
   ];
 
   const openMail = (subject = 'Permintaan modul', body = '') => {
-    const mailto = `mailto:support@siakang.local?subject=${encodeURIComponent(
+    const mailto = `mailto:support@XYZ.local?subject=${encodeURIComponent(
       subject
     )}&body=${encodeURIComponent(body)}`;
     window.location.href = mailto;
@@ -333,3 +333,4 @@ export default function ModulePage({ section }) {
     </section>
   );
 }
+
