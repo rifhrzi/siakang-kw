@@ -427,7 +427,7 @@ export default function LoadBalancerPage() {
         <section className="XYZ-stats">
           {/* Quick Stats Cards */}
           <div className="cards-grid">
-            {XYZSummary.quickStats.map((stat) => (
+            {xyzSummary.quickStats.map((stat) => (
               <article key={stat.label} className="info-card">
                 <p className="label">{stat.icon} {stat.label}</p>
                 <p className="value">{stat.value}</p>
