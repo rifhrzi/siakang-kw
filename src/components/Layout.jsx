@@ -44,7 +44,7 @@ export default function Layout({ semesterLabel, integrationLabel }) {
             SU
           </div>
           <div>
-            <div className="brand-title">XYZ Untirta</div>
+            <div className="brand-title">XYZ xyz</div>
             <div className="brand-subtitle">Academic Portal</div>
           </div>
         </div>

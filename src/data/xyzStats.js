@@ -1,8 +1,8 @@
 /**
  * XYZ (Sistem Informasi Akademik) - Statistik & Data Infrastruktur
- * Universitas Sultan Ageng Tirtayasa (Untirta)
+ * xyz (xyz)
  * 
- * Data ini merepresentasikan skala sistem akademik universitas dengan
+ * Data ini merepresentasikan skala sistem akademik xyz dengan
  * ~30.000 mahasiswa aktif dan ~1.200 dosen.
  */
 

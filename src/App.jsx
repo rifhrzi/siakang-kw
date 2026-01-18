@@ -15,7 +15,7 @@ export default function App() {
           element={
             <Layout
               semesterLabel={student.semesterStatus}
-              integrationLabel="Terhubung dengan Sistem Akademik Untirta"
+              integrationLabel="Terhubung dengan Sistem Akademik xyz"
             />
           }
         >
