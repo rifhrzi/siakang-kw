@@ -248,6 +248,9 @@ let legacyTotalRequests = 0;
 let legacyRequestCursor = 0;
 const legacyDispatchLog = [];
 
+// Load Balancing Toggle State
+let loadBalancingEnabled = true;
+
 const buildLegacyPayload = () => ({
   servers: legacyPool.map((server) => ({
     ...server,
@@ -261,6 +264,7 @@ const buildLegacyPayload = () => ({
     requests: legacyTotalRequests,
     activeTargets: legacyBalancer.activeCount(),
     algorithm: 'weighted-round-robin',
+    loadBalancingEnabled,
   },
   recentDispatches: legacyDispatchLog.slice(0, 24),
 });
@@ -282,6 +286,26 @@ app.get('/api/ping', (_req, res) => {
 
 app.get('/api/servers', (_req, res) => {
   res.json(buildLegacyPayload());
+});
+
+// Load Balancing Status endpoint
+app.get('/api/lb-status', (_req, res) => {
+  res.json({ loadBalancingEnabled });
+});
+
+// Toggle Load Balancing on/off
+app.post('/api/lb-toggle', (req, res) => {
+  const { enabled } = req.body ?? {};
+  if (typeof enabled === 'boolean') {
+    loadBalancingEnabled = enabled;
+  } else {
+    // Toggle if no specific value provided
+    loadBalancingEnabled = !loadBalancingEnabled;
+  }
+  res.json({
+    loadBalancingEnabled,
+    message: loadBalancingEnabled ? 'Load balancing diaktifkan' : 'Load balancing dinonaktifkan'
+  });
 });
 
 /**
@@ -327,6 +351,14 @@ async function makeRealRequest(server) {
 }
 
 app.post('/api/traffic', async (req, res) => {
+  // Check if load balancing is enabled
+  if (!loadBalancingEnabled) {
+    return res.status(503).json({
+      message: 'Load balancing sedang dinonaktifkan. Aktifkan terlebih dahulu untuk mengirim request.',
+      loadBalancingEnabled: false
+    });
+  }
+
   const count = Math.max(Number(req.body?.count) || 1, 1); // No upper limit for stress testing
   const dispatched = [];
 
@@ -782,6 +814,8 @@ app.listen(port, () => {
   console.log('Available endpoints:');
   console.log('  GET    /api/health');
   console.log('  GET    /api/servers');
+  console.log('  GET    /api/lb-status         (load balancing status)');
+  console.log('  POST   /api/lb-toggle         (toggle load balancing)');
   console.log('  POST   /api/servers          (add new server)');
   console.log('  PATCH  /api/servers/:id      (update server)');
   console.log('  DELETE /api/servers/:id      (remove server)');

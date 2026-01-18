@@ -880,6 +880,98 @@ img {
   box-shadow: 0 0 0 3px rgba(77, 103, 163, 0.15);
 }
 
+/* Load Balancing Toggle Switch */
+.lb-toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  padding: 12px 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.lb-toggle-label {
+  font-weight: 600;
+  color: var(--text-main);
+  font-size: 0.95rem;
+}
+
+.lb-toggle-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  width: 80px;
+  height: 36px;
+  background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+  border: 2px solid #cbd5e1;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  outline: none;
+}
+
+.lb-toggle-switch:hover {
+  border-color: #94a3b8;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.lb-toggle-switch:focus-visible {
+  box-shadow: 0 0 0 3px rgba(77, 103, 163, 0.3);
+}
+
+.lb-toggle-switch.active {
+  background: linear-gradient(135deg, #4d67a3 0%, #3c4f85 100%);
+  border-color: #4d67a3;
+}
+
+.lb-toggle-slider {
+  position: absolute;
+  left: 4px;
+  width: 26px;
+  height: 26px;
+  background: var(--white);
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.lb-toggle-switch.active .lb-toggle-slider {
+  transform: translateX(44px);
+}
+
+.lb-toggle-status {
+  position: absolute;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+}
+
+.lb-toggle-switch:not(.active) .lb-toggle-status {
+  right: 10px;
+  color: #64748b;
+}
+
+.lb-toggle-switch.active .lb-toggle-status {
+  left: 10px;
+  color: var(--white);
+}
+
+.lb-toggle-switch:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.lb-quick-control input:disabled,
+.lb-quick-control button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .lb-dashboard-grid {
   display: grid;
   grid-template-columns: 1.2fr 1fr;

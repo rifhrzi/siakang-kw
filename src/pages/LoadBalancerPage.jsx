@@ -24,11 +24,13 @@ export default function LoadBalancerPage() {
     updatingServer,
     error,
     quickSimResults,
+    loadBalancingEnabled,
     fetchState,
     sendTraffic,
     updateServer,
     resetSimulation,
     runQuickSimulation,
+    toggleLoadBalancing,
   } = useLoadBalancerApi();
 
   useEffect(() => {
@@ -70,6 +72,20 @@ export default function LoadBalancerPage() {
           </dl>
         </div>
         <div className="hero-cta">
+          {/* Load Balancing Toggle Switch */}
+          <div className="lb-toggle-container">
+            <span className="lb-toggle-label">Load Balancing</span>
+            <button
+              type="button"
+              className={`lb-toggle-switch ${loadBalancingEnabled ? 'active' : ''}`}
+              onClick={() => toggleLoadBalancing(!loadBalancingEnabled)}
+              disabled={isLoading}
+              aria-label={loadBalancingEnabled ? 'Nonaktifkan Load Balancing' : 'Aktifkan Load Balancing'}
+            >
+              <span className="lb-toggle-slider"></span>
+              <span className="lb-toggle-status">{loadBalancingEnabled ? 'ON' : 'OFF'}</span>
+            </button>
+          </div>
           <p>
             Simulasi load balancer untuk sistem akademik dengan {userStats.mahasiswa.aktif.toLocaleString('id-ID')} mahasiswa aktif
             dan rata-rata {peakTimes.requestStats.avgPerHari.toLocaleString('id-ID')} request/hari.
@@ -81,21 +97,22 @@ export default function LoadBalancerPage() {
               value={customCount}
               onChange={(e) => setCustomCount(Math.max(1, Number(e.target.value) || 1))}
               placeholder="Jumlah request"
+              disabled={!loadBalancingEnabled}
             />
             <button
               type="button"
               className="btn primary"
               onClick={() => sendTraffic(customCount)}
-              disabled={isLoading}
+              disabled={isLoading || !loadBalancingEnabled}
             >
               {isLoading ? 'Mengirim...' : `Kirim ${customCount} Request`}
             </button>
           </div>
           <div className="cta-buttons">
-            <button type="button" className="btn secondary" onClick={() => sendTraffic(1)} disabled={isLoading}>
+            <button type="button" className="btn secondary" onClick={() => sendTraffic(1)} disabled={isLoading || !loadBalancingEnabled}>
               +1 Request
             </button>
-            <button type="button" className="btn secondary" onClick={() => sendTraffic(50)} disabled={isLoading}>
+            <button type="button" className="btn secondary" onClick={() => sendTraffic(50)} disabled={isLoading || !loadBalancingEnabled}>
               Burst 50
             </button>
             <button type="button" className="btn tertiary" onClick={resetSimulation} disabled={isLoading}>

@@ -8,11 +8,12 @@ const API_BASE = import.meta.env.VITE_LB_BASE_URL ?? (import.meta.env.PROD ? '' 
  */
 export function useLoadBalancerApi() {
     const [servers, setServers] = useState([]);
-    const [totals, setTotals] = useState({ requests: 0, activeTargets: 0 });
+    const [totals, setTotals] = useState({ requests: 0, activeTargets: 0, loadBalancingEnabled: true });
     const [recent, setRecent] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [updatingServer, setUpdatingServer] = useState(null);
     const [error, setError] = useState(null);
+    const [loadBalancingEnabled, setLoadBalancingEnabled] = useState(true);
 
     // A/B Testing State
     const [quickSimResults, setQuickSimResults] = useState(null);
@@ -26,8 +27,32 @@ export function useLoadBalancerApi() {
             setServers(data.servers ?? []);
             setTotals(data.totals ?? {});
             setRecent(data.recentDispatches ?? []);
+            if (data.totals?.loadBalancingEnabled !== undefined) {
+                setLoadBalancingEnabled(data.totals.loadBalancingEnabled);
+            }
         } catch (err) {
             setError(err.message);
+        }
+    }, []);
+
+    const toggleLoadBalancing = useCallback(async (enabled) => {
+        setIsLoading(true);
+        setError(null);
+        try {
+            const response = await fetch(`${API_BASE}/api/lb-toggle`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ enabled }),
+            });
+            const payload = await response.json();
+            if (!response.ok) throw new Error(payload?.message ?? 'Gagal mengubah status load balancing');
+            setLoadBalancingEnabled(payload.loadBalancingEnabled);
+            return payload;
+        } catch (err) {
+            setError(err.message);
+            return null;
+        } finally {
+            setIsLoading(false);
         }
     }, []);
 
@@ -119,6 +144,7 @@ export function useLoadBalancerApi() {
         updatingServer,
         error,
         quickSimResults,
+        loadBalancingEnabled,
         // Actions
         fetchState,
         sendTraffic,
@@ -126,5 +152,6 @@ export function useLoadBalancerApi() {
         resetSimulation,
         runQuickSimulation,
         setQuickSimResults,
+        toggleLoadBalancing,
     };
 }
