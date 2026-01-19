@@ -35,7 +35,7 @@ export default function InfraTab() {
                 <div className="lb-dash-panel__header">
                     <div>
                         <p className="eyebrow">🏗️ Daftar Server</p>
-                        <h3>Infrastruktur XYZ</h3>
+                        <h3>XYZ</h3>
                     </div>
                 </div>
                 <div className="stats-table-wrapper">

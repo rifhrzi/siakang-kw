@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useLoadBalancerApi } from '../hooks/useLoadBalancerApi';
-import { MonitorTab, StatsTab, InfraTab, ABTestTab } from '../components/LoadBalancer';
+import { MonitorTab, StatsTab, ABTestTab } from '../components/LoadBalancer';
 import {
   userStats,
   features,
@@ -47,7 +47,7 @@ export default function LoadBalancerPage() {
               <span>⚖️</span>
             </div>
             <div>
-              <p className="welcome">Simulasi Infrastruktur XYZ</p>
+              <p className="welcome">Simulasi XYZ</p>
               <h1 className="student-name">Load Balancer WRR</h1>
               <p className="student-program">Weighted Round Robin Algorithm</p>
             </div>
@@ -140,13 +140,7 @@ export default function LoadBalancerPage() {
         >
           📊 Statistik XYZ
         </button>
-        <button
-          type="button"
-          className={`lb-tab ${activeTab === 'infra' ? 'active' : ''}`}
-          onClick={() => setActiveTab('infra')}
-        >
-          🏗️ Infrastruktur
-        </button>
+
         <button
           type="button"
           className={`lb-tab ${activeTab === 'abtest' ? 'active' : ''}`}
@@ -171,7 +165,7 @@ export default function LoadBalancerPage() {
 
       {activeTab === 'stats' && <StatsTab />}
 
-      {activeTab === 'infra' && <InfraTab />}
+
 
       {activeTab === 'abtest' && (
         <ABTestTab
