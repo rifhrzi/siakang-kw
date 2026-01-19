@@ -56,7 +56,10 @@ export class WeightedRoundRobin {
     const active = this.activeServers;
     if (!active.length) return null;
 
-    while (true) {
+    let count = 0;
+    const limit = active.length * 20; // Safety break to prevent infinite loops
+
+    while (count < limit) {
       this.currentIndex = (this.currentIndex + 1) % active.length;
       if (this.currentIndex === 0) {
         this.currentWeight -= this.gcdWeight;
@@ -65,10 +68,15 @@ export class WeightedRoundRobin {
           if (this.currentWeight === 0) return null;
         }
       }
+
       if (active[this.currentIndex].weight >= this.currentWeight) {
         return active[this.currentIndex];
       }
+      count++;
     }
+
+    // Fallback if loop limit reached (should rarely happen with correct logic)
+    return active[0];
   }
 
   reset() {
