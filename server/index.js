@@ -351,20 +351,19 @@ async function makeRealRequest(server) {
 }
 
 app.post('/api/traffic', async (req, res) => {
-  // Check if load balancing is enabled
-  if (!loadBalancingEnabled) {
-    return res.status(503).json({
-      message: 'Load balancing sedang dinonaktifkan. Aktifkan terlebih dahulu untuk mengirim request.',
-      loadBalancingEnabled: false
-    });
-  }
-
   const count = Math.max(Number(req.body?.count) || 1, 1); // No upper limit for stress testing
   const dispatched = [];
 
   // Process requests (with real HTTP or simulation based on mode)
   for (let i = 0; i < count; i += 1) {
-    const target = legacyBalancer.next();
+    let target;
+
+    if (loadBalancingEnabled) {
+      target = legacyBalancer.next();
+    } else {
+      // Direct traffic to primary server (first in pool) when LB is disabled
+      target = legacyPool.length > 0 ? legacyPool[0] : null;
+    }
 
     if (!target) {
       return res
